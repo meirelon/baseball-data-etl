@@ -19,10 +19,6 @@ def main(argv=None):
                         dest='destination_table',
                         default=None,
                         help='destination of table')
-    parser.add_argument('--destination_table',
-                        dest='destination_table',
-                        default=None,
-                        help='destination of table')
 
     args, _ = parser.parse_known_args(argv)
     df = getStatCastData()
