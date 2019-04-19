@@ -1,6 +1,5 @@
 import argparse
 from datetime import datetime
-from google.cloud import bigquery
 import pandas as pd
 from pybaseball import statcast
 
