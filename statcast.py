@@ -35,7 +35,7 @@ def main(argv=None):
     df.to_gbq(project_id=args.project_id,
                                  destination_table=args.destination_table,
                                  if_exists="append",
-                                 credentials=creds,
+                                 private_key=creds,
                                  chunksize=1000)
 
 if __name__ == '__main__':
