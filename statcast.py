@@ -19,12 +19,23 @@ def main(argv=None):
                         dest='destination_table',
                         default=None,
                         help='destination of table')
+    parser.add_argument('--credentials',
+                        dest='credentials',
+                        default=None,
+                        help='bq credentials')
 
     args, _ = parser.parse_known_args(argv)
     df = getStatCastData()
+
+    import json
+    with open(args.credentials, 'r') as f:
+        creds = json.load(f)
+
+
     df.to_gbq(project_id=args.project_id,
                                  destination_table=args.destination_table,
                                  if_exists="append",
+                                 credentials=creds,
                                  chunksize=1000)
 
 if __name__ == '__main__':
