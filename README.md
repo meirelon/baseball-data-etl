@@ -1,4 +1,4 @@
-# statcast ETL
+# Baseball Data ETL
 
 This project will get the most recent day of statcast data from Baseball Savant
 and dump the table into a Google Bigquery database of your choice.
