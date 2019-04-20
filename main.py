@@ -9,6 +9,6 @@ def df_to_bq(df, project, destination_table, key):
 def statcast_request(request):
     project = os.environ["PROJECT_ID"]
     destination_table = os.environ["DESTINATION_TABLE"]
-    key = os.environ["KEY"]
+    # key = os.environ["KEY"]
     df = get_statcast_data()
     df_to_gbq(df, project, destination_table)
