@@ -15,3 +15,6 @@ def get_statcast_data():
     statcast_df.columns = [c.replace(".", "_" ) for c in statcast_df.columns]
     statcast_df['date'] = start_dt
     return statcast_df
+
+if __name__ == '__main__':
+    get_statcast_data()
