@@ -1,4 +1,4 @@
 pyasn1 == 0.4.1
-pandas-gbq==0.10.0
-pandas==0.19.0
+pandas-gbq == 0.10.0
+pandas==0.24.2
 requests
