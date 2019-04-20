@@ -1,42 +1,22 @@
-import argparse
+import os
 from datetime import datetime
+import requests
+import io
 import pandas as pd
-from pybaseball import statcast
 
+def get_statcast_data():
+    start_dt = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+    end_dt = datetime.now().strftime("%Y-%m-%d")
+    url = "https://baseballsavant.mlb.com/statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt={}&game_date_lt={}&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details&".format(start_dt, end_dt)
+    s=requests.get(url, timeout=None).content
+    return pd.read_csv(io.StringIO(s.decode('utf-8')))
 
-def getStatCastData():
-    now = datetime.now().strftime("%Y-%m-%d")
-    return statcast(now, verbose=False)
-
-def main(argv=None):
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('--project_id',
-                        dest='project_id',
-                        default=None,
-                        help='gcp project')
-    parser.add_argument('--destination_table',
-                        dest='destination_table',
-                        default=None,
-                        help='destination of table')
-    parser.add_argument('--credentials',
-                        dest='credentials',
-                        default=None,
-                        help='bq credentials')
-
-    args, _ = parser.parse_known_args(argv)
-    df = getStatCastData()
-
-    import json
-    with open(args.credentials, 'r') as f:
-        creds = json.load(f)
-
-
-    df.to_gbq(project_id=args.project_id,
-                                 destination_table=args.destination_table,
-                                 if_exists="append",
-                                 private_key=creds,
-                                 chunksize=1000)
-
-if __name__ == '__main__':
-    main()
+def df_to_bq():
+    project = os.environ["PROJECT_ID"]
+    destination_table = os.environ["DESTINATION_TABLE"]
+    key = os.environ["KEY"]
+    df = get_statcast_data()
+    df.to_gbq(project_id=project,
+              destination_table=destination_table,
+              if_exists='append',
+              private_key=key)
