@@ -1,3 +1,4 @@
+import os
 from deps.statcast import get_statcast_data
 import pandas as pd
 
