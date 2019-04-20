@@ -10,7 +10,7 @@ then schedule the function to trigger daily with Google Cloud Scheduler.
 ## Run Locally
 This will return the latest day of statcast data as a DataFrame
 ```
-git clone https://github.com/meirelon/statcast.git
+git clone https://github.com/meirelon/baseball-data-etl.git
 cd statcast
 pip install -r requirements.txt
 python deps/statcast.py
@@ -18,7 +18,7 @@ python deps/statcast.py
 
 ## Build Cloud Function
 ```
-git clone https://github.com/meirelon/statcast.git
+git clone https://github.com/meirelon/baseball-data-etl.git
 cd statcast
 gcloud beta functions deploy statcast_request --set-env-vars=PROJECT_ID=[YOUR-PROJECT-ID],DESTINATION_TABLE=[YOUR-DESTINATION-TABLE]  --runtime python37 --trigger-http
 ```
