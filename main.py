@@ -21,5 +21,5 @@ def mlb_game_logs(request):
 
     df = get_gamelog_range(get_date_range(start=yesterday))
     pandas_gbq.to_gbq(df, project_id=project,
-                      destination_table=destination_table,
+                      destination_table=destination_table+"_{}".format(datetime.now().strftime("%Y")),
                       if_exists="append")
