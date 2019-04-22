@@ -8,11 +8,12 @@ from deps.utils import get_date_range, get_gamelog_range
 def statcast_request(request):
     project = os.environ["PROJECT_ID"]
     destination_table = os.environ["DESTINATION_TABLE"]
-    # key = os.environ["KEY"]
+
+    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
     df = get_statcast_data()
     pandas_gbq.to_gbq(df, project_id=project,
-                      destination_table=destination_table+"_{}".format(datetime.now().strftime("%Y")),
-                      if_exists="append")
+                      destination_table=destination_table+"_{}".format(yesterday),
+                      if_exists="replace")
 
 def mlb_game_logs(request):
     project = os.environ["PROJECT_ID"]
@@ -21,5 +22,5 @@ def mlb_game_logs(request):
 
     df = get_gamelog_range(get_date_range(start=yesterday))
     pandas_gbq.to_gbq(df, project_id=project,
-                      destination_table=destination_table+"_{}".format(datetime.now().strftime("%Y")),
-                      if_exists="append")
+                      destination_table=destination_table+"_{}".format(yesterday),
+                      if_exists="replace")
