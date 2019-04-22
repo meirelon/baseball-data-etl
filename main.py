@@ -12,7 +12,7 @@ def statcast_request(request):
     yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
     df = get_statcast_data()
     pandas_gbq.to_gbq(df, project_id=project,
-                      destination_table=destination_table+"_{}".format(yesterday),
+                      destination_table=destination_table+"_{}".format(yesterday.replace("-","")),
                       if_exists="replace")
 
 def mlb_game_logs(request):
@@ -22,5 +22,5 @@ def mlb_game_logs(request):
 
     df = get_gamelog_range(get_date_range(start=yesterday))
     pandas_gbq.to_gbq(df, project_id=project,
-                      destination_table=destination_table+"_{}".format(yesterday),
+                      destination_table=destination_table+"_{}".format(yesterday.replace("-","")),
                       if_exists="replace")
