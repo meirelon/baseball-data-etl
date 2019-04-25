@@ -28,6 +28,7 @@ def mlb_game_logs(request):
 def mlb_daily_etl(request):
     project = os.environ["PROJECT_ID"]
     dataset = os.environ["DATASET"]
+    today = datetime.now().strftime("%Y-%m-%d")
     yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
 
     #DAILY STATCAST DATA FROM BASEBALL SAVANT
@@ -45,7 +46,7 @@ def mlb_daily_etl(request):
     #DAILY INJURY REPORT FROM MLBAM
     df = mlb_injuries()
     pandas_gbq.to_gbq(df, project_id=project,
-              destination_table="{dataset}.injuries_{dt}".format(dataset=dataset, dt=dt.replace("-","")),
+              destination_table="{dataset}.injuries_{dt}".format(dataset=dataset, dt=today.replace("-","")),
               if_exists="replace")
 
     #PROBABLE PITCHERS OVER NEXT THREE DAYS FROM MLBAM
