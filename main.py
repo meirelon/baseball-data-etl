@@ -5,26 +5,6 @@ import pandas_gbq
 from deps.statcast import get_statcast_data
 from deps.utils import get_gamelog_range, probablePitchers, mlb_injuries, get_date_range_days, mlb_injuries
 
-def statcast_request(request):
-    project = os.environ["PROJECT_ID"]
-    destination_table = os.environ["DESTINATION_TABLE"]
-
-    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-    df = get_statcast_data()
-    pandas_gbq.to_gbq(df, project_id=project,
-                      destination_table=destination_table+"_{}".format(yesterday.replace("-","")),
-                      if_exists="replace")
-
-def mlb_game_logs(request):
-    project = os.environ["PROJECT_ID"]
-    destination_table = os.environ["DESTINATION_TABLE"]
-    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-
-    df = get_gamelog_range([yesterday])
-    pandas_gbq.to_gbq(df, project_id=project,
-                      destination_table=destination_table+"_{}".format(yesterday.replace("-","")),
-                      if_exists="replace")
-
 def mlb_daily_etl(request):
     project = os.environ["PROJECT_ID"]
     dataset = os.environ["DATASET"]
