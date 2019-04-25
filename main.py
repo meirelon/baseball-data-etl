@@ -28,6 +28,7 @@ def mlb_game_logs(request):
 def mlb_daily_etl(request):
     project = os.environ["PROJECT_ID"]
     dataset = os.environ["DATASET"]
+    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
 
     #DAILY STATCAST DATA FROM BASEBALL SAVANT
     df = get_statcast_data()
@@ -36,7 +37,6 @@ def mlb_daily_etl(request):
                       if_exists="replace")
 
     #DAILY STANDARD GAME LOGS
-    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
     df = get_gamelog_range([yesterday])
     pandas_gbq.to_gbq(df, project_id=project,
                       destination_table="{dataset}.batting_{dt}".format(dataset=dataset, dt=yesterday.replace("-","")),
