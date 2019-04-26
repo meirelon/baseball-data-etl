@@ -30,7 +30,7 @@ def mlb_daily_etl(request):
               if_exists="replace")
 
     #PROBABLE PITCHERS OVER NEXT THREE DAYS FROM MLBAM
-    date_range = get_date_range_days(start=0, end=3)
+    date_range = get_date_range_days(start=0, end=2)
     for dt in date_range:
       dt_split = [int(x) for x in dt.split("-")]
       probables = probablePitchers(dt_split[0],dt_split[1],dt_split[2])
