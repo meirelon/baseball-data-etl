@@ -1,6 +1,6 @@
 import requests
 import pandas as pd
-import mlb_teams
+from mlb_teams import mlb_teams
 
 
 class seatgeek:
