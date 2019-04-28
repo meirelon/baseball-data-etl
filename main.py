@@ -4,8 +4,10 @@ import pandas as pd
 import pandas_gbq
 from deps.statcast import get_statcast_data
 from deps.utils import get_gamelog_range, probablePitchers, mlb_injuries, get_date_range_days, mlb_injuries
+from deps.seatgeek import seatgeek
 
 def mlb_daily_etl(request):
+    #DEFINE ENVIRONMENT VARIABLES
     project = os.environ["PROJECT_ID"]
     dataset = os.environ["DATASET"]
     today = datetime.now().strftime("%Y-%m-%d")
@@ -38,3 +40,19 @@ def mlb_daily_etl(request):
       pandas_gbq.to_gbq(df, project_id=project,
                 destination_table="{dataset}.probable_pitchers_{dt}".format(dataset=dataset, dt=dt.replace("-","")),
                 if_exists="replace")
+
+
+def seatgeek_events(request):
+    #DEFINE ENVIRONMENT VARIABLES
+    project = os.environ["PROJECT_ID"]
+    dataset = os.environ["DATASET"]
+    seat_geek_client_id = os.environ["SEAK_GEEK_CLIENT_ID"]
+    seat_geek_secret = os.environ["SEAT_GEEK_SECRET"]
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    #DAILY INJURY REPORT FROM MLBAM
+    geek = seatgeek(client=seat_geek_client_id, secret=seat_geek_secret)
+    df =geek_run()
+    pandas_gbq.to_gbq(df, project_id=project,
+              destination_table="{dataset}.tickets_{dt}".format(dataset=dataset, dt=today.replace("-","")),
+              if_exists="replace")
