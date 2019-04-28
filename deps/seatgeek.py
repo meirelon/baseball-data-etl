@@ -1,7 +1,5 @@
 import requests
 import pandas as pd
-from mlb_teams import mlb_teams
-
 
 class seatgeek:
   def __init__(self, client, secret):
@@ -23,6 +21,36 @@ class seatgeek:
     return r.json().get("performers")[0].get("home_venue_id")
 
   def get_mlb_venues(self):
+      mlb_teams = ["baltimore orioles",
+         "arizona diamondbacks",
+         "boston red sox",
+         "chicago white sox",
+         "cleveland indians",
+         "detroit tigers",
+         "houston astros",
+         "kansas city royals",
+         "los angeles angels",
+         "minnesota twins",
+         "new york yankees",
+        "oakland athletics",
+        "seattle mariners",
+        "tampa bay rays",
+         "texas rangers",
+        "toronto blue jays",
+        "atlanta braves",
+         "chicago cubs",
+         "cincinnati reds",
+         "colorado rockies",
+         "los angeles dodgers",
+         "miami marlins",
+         "milwaukee brewers",
+         "new york mets",
+         "philadelphia phillies",
+         "pittsburgh pirates",
+         "san diego padres",
+         "san francisco giants",
+         "st louis cardinals",
+         "washington nationals"]
     mlb_venues = {t:self.get_home_venue_id(t) for t in mlb_teams}
     return ",".join([str(v) for v in mlb_venues.values()])
 
