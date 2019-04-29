@@ -5,6 +5,7 @@ import pandas_gbq
 from deps.statcast import get_statcast_data
 from deps.utils import get_gamelog_range, probablePitchers, mlb_injuries, get_date_range_days, mlb_injuries
 from deps.seatgeek import seatgeek
+from deps.weather import weather
 
 def mlb_daily_etl(request):
     # DEFINE ENVIRONMENT VARIABLES
@@ -55,4 +56,19 @@ def seatgeek_events(request):
     df =geek.run()
     pandas_gbq.to_gbq(df, project_id=project,
               destination_table="{dataset}.tickets_{dt}".format(dataset=dataset, dt=today.replace("-","")),
+              if_exists="replace")
+
+def mlb_weather(request):
+    project = os.environ["PROJECT_ID"]
+    dataset = os.environ["DATASET"]
+    api_key = os.environment["WEATHER_API_KEY"]
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    client = weather(project_id=project,
+                     dataset=dataset,
+                     date=today,
+                     api_key=api_key)
+    df = client.get_mlb_weather(darksky=True)
+    pandas_gbq.to_gbq(df, project_id=project,
+              destination_table="{dataset}.weather_{dt}".format(dataset=dataset, dt=today.replace("-","")),
               if_exists="replace")
