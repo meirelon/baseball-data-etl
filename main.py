@@ -61,7 +61,7 @@ def seatgeek_events(request):
 def mlb_weather(request):
     project = os.environ["PROJECT_ID"]
     dataset = os.environ["DATASET"]
-    api_key = os.environment["WEATHER_API_KEY"]
+    api_key = os.environ["WEATHER_API_KEY"]
     today = datetime.now().strftime("%Y-%m-%d")
 
     client = weather(project_id=project,
