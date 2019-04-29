@@ -9,7 +9,7 @@ class weather:
         self.api_key = api_key
 
 
-    def get_weather_darksky(self, lat, long, time_string=None):
+    def get_weather_darksky(self, lat, long, time_string=None, current=False):
         weather_url = "https://api.darksky.net/forecast/{key}/{lat},{long}".format(key=self.api_key,
                                                                                    lat=lat,
                                                                                    long=long)
@@ -19,7 +19,11 @@ class weather:
                                                                                           long=long,
                                                                                           t=time_string)
         r = requests.get(weather_url)
-        return r.json().get("currently")
+        if current:
+            return r.json().get("currently")
+
+        return r.json().get("daily").get("data")[0]
+
 
 
     def get_weather_gov(self, lat, long):
