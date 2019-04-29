@@ -10,7 +10,6 @@ class weather:
 
 
     def get_weather_darksky(self, lat, long, time_string=None):
-        #     key = "82a38c22174cf5ecb887fcf12d21092c"
         weather_url = "https://api.darksky.net/forecast/{key}/{lat},{long}".format(key=self.api_key,
                                                                                    lat=lat,
                                                                                    long=long)
