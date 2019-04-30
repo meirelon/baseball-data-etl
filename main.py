@@ -32,15 +32,13 @@ def mlb_daily_etl(request):
               destination_table="{dataset}.injuries_{dt}".format(dataset=dataset, dt=today.replace("-","")),
               if_exists="replace")
 
-    # # PROBABLE PITCHERS OVER NEXT THREE DAYS FROM MLBAM
-    # date_range = get_date_range_days(start=0, end=2)
-    # for dt in date_range:
-    #   dt_split = [int(x) for x in dt.split("-")]
-    #   probables = probablePitchers(dt_split[0],dt_split[1],dt_split[2])
-    #   df = probables.run()
-    #   pandas_gbq.to_gbq(df, project_id=project,
-    #             destination_table="{dataset}.probable_pitchers_{dt}".format(dataset=dataset, dt=dt.replace("-","")),
-    #             if_exists="replace")
+    # PROBABLE PITCHERS TODAY FROM MLBAM
+    dt_split = [int(x) for x in today.split("-")]
+    probables = probablePitchers(dt_split[0],dt_split[1],dt_split[2])
+    df = probables.run()
+    pandas_gbq.to_gbq(df, project_id=project,
+              destination_table="{dataset}.probable_pitchers_{dt}".format(dataset=dataset, dt=dt.replace("-","")),
+              if_exists="replace")
 
 
 def seatgeek_events(request):
