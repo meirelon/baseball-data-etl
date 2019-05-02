@@ -65,14 +65,15 @@ class seatgeek:
         return tickets
 
     def get_event_df(self, events, event):
-        df = pd.DataFrame(events[event].get("stats")).iloc[0:1,:]
-        df["popularity"] = events[event].get("popularity")
-        df["score"] = events[event].get("score")
-        df["lat"] = events[event].get("lat")
-        df["long"] = events[event].get("long")
-        df["home"] = event.split(" at ")[1]
-        df["away"] = event.split(" at ")[0]
-        return df
+        if len(event.split(" at ")) > 1:
+            df = pd.DataFrame(events[event].get("stats")).iloc[0:1,:]
+            df["popularity"] = events[event].get("popularity")
+            df["score"] = events[event].get("score")
+            df["lat"] = events[event].get("lat")
+            df["long"] = events[event].get("long")
+            df["home"] = event.split(" at ")[1]
+            df["away"] = event.split(" at ")[0]
+            return df
 
     def run(self):
         ticket_info = self.get_ticket_info()
