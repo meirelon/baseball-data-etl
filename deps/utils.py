@@ -128,10 +128,14 @@ class startingLineups:
             away = lineups.get("awayPlayers")
             home = lineups.get("homePlayers")
             if away is not None and home is not None:
-                away_lineup = pd.DataFrame(pd.concat([pd.DataFrame(x) for x in away if x is not None], axis=0, ignore_index=True).drop_duplicates(keep=False)["id"].unique(), columns = ["id"])
+                away_lineup = pd.DataFrame(pd.concat([pd.DataFrame(x) for x in away if x is not None],
+                                                     axis=0,
+                                                     ignore_index=True).drop_duplicates(keep=False)["id"].unique(), columns = ["MLBCODE"])
                 away_lineup["is_home"] = False
                 away_lineup["batting_order"] = [x for x in range(1,10)]
-                home_lineup = pd.DataFrame(pd.concat([pd.DataFrame(x) for x in home if x is not None], axis=0, ignore_index=True).drop_duplicates(keep=False)["id"].unique(), columns = ["id"])
+                home_lineup = pd.DataFrame(pd.concat([pd.DataFrame(x) for x in home if x is not None],
+                                                     axis=0,
+                                                     ignore_index=True).drop_duplicates(keep=False)["id"].unique(), columns = ["MLBCODE"])
                 home_lineup["is_home"] = True
                 home_lineup["batting_order"] = [x for x in range(1,10)]
                 lineup_df = pd.concat([away_lineup, home_lineup], axis=0)
