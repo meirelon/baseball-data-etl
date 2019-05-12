@@ -89,3 +89,58 @@ class probablePitchers:
                                         sort=True)[cols]
         probable_pitcher_df["date"] = datetime.strptime(date, "%Y-%m-%d").strftime("%Y-%m-%d")
         return probable_pitcher_df
+
+
+class startingLineups:
+    def __init__(self, project, dataset, dt):
+        self.project = project
+        self.dataset = dataset
+        self.dt = dt
+
+    def get_games_by_date(self):
+
+        #get the games from 2019 schedule
+        q = """select game_pk
+        from(
+        select *, row_number() over(partition by home order by game_pk) as r
+        from(
+        select regexp_extract(link, "[0-9]{2,}") as game_pk, home
+        from `%s.%s.schedule_2019`
+        where date(timestamp(gameDate)) = date(timestamp('%s'))
+        group by 1,2
+        )
+        )
+        where r = 1"""
+
+        query_formatted = q % (self.project, self.dataset, self.dt)
+
+        df = pd.read_gbq(project_id=self.project, query=query_formatted, dialect="standard")
+        return df
+
+    def get_starting_lineups(self, game_pk):
+        url = "https://statsapi.mlb.com/api/v1/schedule?gamePk={game_pk}&language=en&hydrate=lineups"
+        r = requests.get(url.format(game_pk=game_pk))
+        r_json = r.json()
+
+        lineups = r_json.get("dates")[0].get("games")[0].get("lineups")
+
+        if lineups is not None:
+            away = lineups.get("awayPlayers")
+            home = lineups.get("homePlayers")
+            if away is not None and home is not None:
+                away_lineup = pd.DataFrame(pd.concat([pd.DataFrame(x) for x in away if x is not None], axis=0, ignore_index=True).drop_duplicates(keep=False)["id"].unique(), columns = ["id"])
+                away_lineup["is_home"] = False
+                away_lineup["batting_order"] = [x for x in range(1,10)]
+                home_lineup = pd.DataFrame(pd.concat([pd.DataFrame(x) for x in home if x is not None], axis=0, ignore_index=True).drop_duplicates(keep=False)["id"].unique(), columns = ["id"])
+                home_lineup["is_home"] = True
+                home_lineup["batting_order"] = [x for x in range(1,10)]
+                lineup_df = pd.concat([away_lineup, home_lineup], axis=0)
+
+                return lineup_df
+
+    def run(self):
+        game_pks_df = self.get_games_by_date()
+        starting_lineup_df = pd.concat([self.get_starting_lineups(x)
+                                        for x in game_pks_df.game_pk.values if x is not None], axis=0, ignore_index=True)
+        starting_lineup_df["date"] = self.dt
+        return starting_lineup_df

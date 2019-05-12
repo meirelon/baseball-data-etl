@@ -2,8 +2,9 @@ import os
 from datetime import datetime, timedelta
 import pandas as pd
 import pandas_gbq
+
+import deps.utils as utils
 from deps.statcast import get_statcast_data
-from deps.utils import get_gamelog_range, probablePitchers, mlb_injuries, get_date_range_days, mlb_injuries
 from deps.seatgeek import seatgeek
 from deps.weather import weather
 
@@ -21,20 +22,20 @@ def mlb_daily_etl(request):
                       if_exists="replace")
 
     # DAILY STANDARD GAME LOGS
-    df = get_gamelog_range([yesterday])
+    df = utils.get_gamelog_range([yesterday])
     pandas_gbq.to_gbq(df, project_id=project,
                       destination_table="{dataset}.batting_{dt}".format(dataset=dataset, dt=yesterday.replace("-","")),
                       if_exists="replace")
 
     # DAILY INJURY REPORT FROM MLBAM
-    df = mlb_injuries()
+    df = utils.mlb_injuries()
     pandas_gbq.to_gbq(df, project_id=project,
               destination_table="{dataset}.injuries_{dt}".format(dataset=dataset, dt=today.replace("-","")),
               if_exists="replace")
 
     # PROBABLE PITCHERS TODAY FROM MLBAM
     dt_split = [int(x) for x in today.split("-")]
-    probables = probablePitchers(dt_split[0],dt_split[1],dt_split[2])
+    probables = utils.probablePitchers(dt_split[0],dt_split[1],dt_split[2])
     df = probables.run()
     pandas_gbq.to_gbq(df, project_id=project,
               destination_table="{dataset}.probable_pitchers_{dt}".format(dataset=dataset, dt=dt.replace("-","")),
@@ -69,4 +70,16 @@ def mlb_weather(request):
     df = client.get_mlb_weather(darksky=True)
     pandas_gbq.to_gbq(df, project_id=project,
               destination_table="{dataset}.weather_{dt}".format(dataset=dataset, dt=today.replace("-","")),
+              if_exists="replace")
+
+
+def starting_lineups(request):
+    project = os.environ["PROJECT_ID"]
+    dataset = os.environ["DATASET"]
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    starting_lineups = startingLineups(project=project, dataset=dataset, dt = today)
+    df = starting_lineups.run()
+    pandas_gbq.to_gbq(df, project_id=project,
+              destination_table="{dataset}.starting_lineups_{dt}".format(dataset=dataset, dt=today.replace("-","")),
               if_exists="replace")
