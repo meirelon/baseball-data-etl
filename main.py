@@ -78,7 +78,7 @@ def starting_lineups(request):
     dataset = os.environ["DATASET"]
     today = datetime.now().strftime("%Y-%m-%d")
 
-    starting_lineups = startingLineups(project=project, dataset=dataset, dt = today)
+    starting_lineups = utils.startingLineups(project=project, dataset=dataset, dt = today)
     df = starting_lineups.run()
     pandas_gbq.to_gbq(df, project_id=project,
               destination_table="{dataset}.starting_lineups_{dt}".format(dataset=dataset, dt=today.replace("-","")),
