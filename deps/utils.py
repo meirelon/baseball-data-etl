@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 import pandas as pd
-from pybaseball import batting_stats_range
+from pybaseball import batting_stats_range, pitching_stats_range
 
 def get_date_range(start="2019-03-15", end=datetime.now().strftime("%Y-%m-%d")):
   return [x.strftime("%Y-%m-%d") for x in pd.date_range(start=start, end=end)]
