@@ -22,10 +22,16 @@ def mlb_daily_etl(request):
                       if_exists="replace")
 
     # DAILY STANDARD GAME LOGS
-    df = utils.get_gamelog_range([yesterday])
+    df = utils.get_gamelog_range(date_range=[yesterday], game_log_type="batting")
     pandas_gbq.to_gbq(df, project_id=project,
                       destination_table="{dataset}.batting_{dt}".format(dataset=dataset, dt=yesterday.replace("-","")),
                       if_exists="replace")
+
+     # DAILY STANDARD GAME LOGS
+     df = utils.get_gamelog_range(date_range=[yesterday], game_log_type="pitching")
+     pandas_gbq.to_gbq(df, project_id=project,
+                       destination_table="{dataset}.pitching_{dt}".format(dataset=dataset, dt=yesterday.replace("-","")),
+                       if_exists="replace")
 
     # DAILY INJURY REPORT FROM MLBAM
     df = utils.mlb_injuries()

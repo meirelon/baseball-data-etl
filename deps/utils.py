@@ -11,18 +11,32 @@ def get_date_range_days(start, end):
   end = (datetime.now() + timedelta(days=end)).strftime("%Y-%m-%d")
   return [d.strftime("%Y-%m-%d") for d in pd.date_range(start, end)]
 
-def get_gamelog_range(date_range):
-    game_logs = []
-    for d in date_range:
-        try:
-          b = batting_stats_range(d)
-          b['date'] = d
-          game_logs.append(b)
-        except:
-          next
-    game_logs_df = pd.concat(game_logs, axis=0, ignore_index=True)
-    game_logs_df.columns = [c.replace("#", "").replace("2", "_2").replace("3", "_3") for c in game_logs_df.columns]
-    return game_logs_df
+def get_gamelog_range(date_range, game_log_type = "batting"):
+    if game_log_type == "batting":
+        game_logs = []
+        for d in date_range:
+            try:
+                b = batting_stats_range(d)
+                b['date'] = d
+                game_logs.append(b)
+            except:
+                next
+        game_logs_df = pd.concat(game_logs, axis=0, ignore_index=True)
+        game_logs_df.columns = [c.replace("#", "").replace("2", "_2").replace("3", "_3") for c in game_logs_df.columns]
+        return game_logs_df
+
+    if game_log_type == "pitching":
+        game_logs = []
+        for d in date_range:
+            try:
+                p = pitching_stats_range(d)
+                p['date'] = d
+                game_logs.append(p)
+            except:
+                next
+        game_logs_df = pd.concat(game_logs, axis=0, ignore_index=True)
+        game_logs_df.columns = [c.replace("#", "").replace("2", "_2").replace("3", "_3").replace("/","_") for c in game_logs_df.columns]
+        return game_logs_df
 
 
 def mlb_injuries():
