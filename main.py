@@ -44,7 +44,7 @@ def mlb_daily_etl(request):
     probables = utils.probablePitchers(dt_split[0],dt_split[1],dt_split[2])
     df = probables.run()
     pandas_gbq.to_gbq(df, project_id=project,
-              destination_table="{dataset}.probable_pitchers_{dt}".format(dataset=dataset, dt=dt.replace("-","")),
+              destination_table="{dataset}.probable_pitchers_{dt}".format(dataset=dataset, dt=today.replace("-","")),
               if_exists="replace")
 
 
