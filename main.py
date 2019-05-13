@@ -80,6 +80,7 @@ def starting_lineups(request):
 
     starting_lineups = utils.startingLineups(project=project, dataset=dataset, dt = today)
     df = starting_lineups.run()
-    pandas_gbq.to_gbq(df, project_id=project,
-              destination_table="{dataset}.starting_lineups_{dt}".format(dataset=dataset, dt=today.replace("-","")),
-              if_exists="replace")
+    if df is not None:
+        pandas_gbq.to_gbq(df, project_id=project,
+                  destination_table="{dataset}.starting_lineups_{dt}".format(dataset=dataset, dt=today.replace("-","")),
+                  if_exists="replace")
