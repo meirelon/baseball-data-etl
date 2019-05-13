@@ -143,8 +143,11 @@ class startingLineups:
                 return lineup_df
 
     def run(self):
-        game_pks_df = self.get_games_by_date()
-        starting_lineup_df = pd.concat([self.get_starting_lineups(x)
-                                        for x in game_pks_df.game_pk.values if x is not None], axis=0, ignore_index=True)
-        starting_lineup_df["date"] = self.dt
-        return starting_lineup_df
+        try:
+            game_pks_df = self.get_games_by_date()
+            starting_lineup_df = pd.concat([self.get_starting_lineups(x)
+                                            for x in game_pks_df.game_pk.values if x is not None], axis=0, ignore_index=True)
+            starting_lineup_df["date"] = self.dt
+            return starting_lineup_df
+        except:
+            return None
