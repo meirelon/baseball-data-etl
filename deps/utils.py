@@ -121,6 +121,7 @@ class startingLineups:
         select regexp_extract(link, "[0-9]{2,}") as game_pk, home
         from `%s.%s.schedule_2019`
         where date(timestamp(gameDate)) = date(timestamp('%s'))
+        and timestamp(gameDate) > timestamp_sub(current_timestamp(), interval 5 hour)
         group by 1,2
         )
         )
